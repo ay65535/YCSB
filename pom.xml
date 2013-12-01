@@ -44,7 +44,7 @@
   <!-- Properties Management -->
   <properties>
     <maven.assembly.version>2.2.1</maven.assembly.version>
-    <hbase.version>0.92.1</hbase.version>
+    <hbase.version>0.94.0</hbase.version>
     <cassandra.version>0.7.0</cassandra.version>
     <infinispan.version>7.1.0.CR1</infinispan.version>
     <openjpa.jdbc.version>2.1.1</openjpa.jdbc.version>
@@ -60,21 +60,21 @@
 
   <modules>
     <!--module>build-tools</module-->
-    <module>cassandra</module>
+    <!-- <module>cassandra</module> -->
     <module>core</module>
     <module>hbase</module>
-    <module>hypertable</module>
-    <module>dynamodb</module>
-    <module>elasticsearch</module>
+    <!-- <module>hypertable</module> -->
+    <!-- <module>dynamodb</module> -->
+    <!-- <module>elasticsearch</module> -->
     <!--<module>gemfire</module>-->
-    <module>infinispan</module>
+    <!-- <module>infinispan</module> -->
     <module>jdbc</module>
-    <module>mapkeeper</module>
-    <module>mongodb</module>
-    <module>orientdb</module>
+    <!-- <module>mapkeeper</module> -->
+    <!-- <module>mongodb</module> -->
+    <!-- <module>orientdb</module> -->
     <!--module>nosqldb</module-->
-    <module>redis</module>
-    <module>voldemort</module>
+    <!-- <module>redis</module> -->
+    <!-- <module>voldemort</module> -->
     <module>distribution</module>
   </modules>
 
@@ -108,5 +108,38 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+    	<plugins>
+    		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+    		<plugin>
+    			<groupId>org.eclipse.m2e</groupId>
+    			<artifactId>lifecycle-mapping</artifactId>
+    			<version>1.0.0</version>
+    			<configuration>
+    				<lifecycleMappingMetadata>
+    					<pluginExecutions>
+    						<pluginExecution>
+    							<pluginExecutionFilter>
+    								<groupId>
+    									org.apache.maven.plugins
+    								</groupId>
+    								<artifactId>
+    									maven-checkstyle-plugin
+    								</artifactId>
+    								<versionRange>[2.6,)</versionRange>
+    								<goals>
+    									<goal>checkstyle</goal>
+    								</goals>
+    							</pluginExecutionFilter>
+    							<action>
+    								<ignore></ignore>
+    							</action>
+    						</pluginExecution>
+    					</pluginExecutions>
+    				</lifecycleMappingMetadata>
+    			</configuration>
+    		</plugin>
+    	</plugins>
+    </pluginManagement>
   </build>
 </project>
