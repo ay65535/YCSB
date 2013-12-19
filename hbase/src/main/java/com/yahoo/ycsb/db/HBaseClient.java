@@ -100,7 +100,9 @@ public class HBaseClient extends com.yahoo.ycsb.DB
         try {
             long st=System.nanoTime();
             if (_hTable != null) {
+            	System.out.println("@@@ currentWriteBufferSize Before flushCommits() is: " + _hTable.getWriteBuffer().size());
                 _hTable.flushCommits();
+                System.out.println("@@@ currentWriteBufferSize After flushCommits() is: " + _hTable.getWriteBuffer().size());
             }
             long en=System.nanoTime();
             _measurements.measure("UPDATE", (int)((en-st)/1000));
@@ -329,9 +331,9 @@ public class HBaseClient extends com.yahoo.ycsb.DB
 
         try
         {
-            System.out.println("@@@ currentWriteBufferSizeBefore is: " + _hTable.getWriteBuffer().size());
+            System.out.println("@@@ currentWriteBufferSize Before put() is: " + _hTable.getWriteBuffer().size());
             _hTable.put(p);
-            System.out.println("@@@ currentWriteBufferSizeAfter is " + _hTable.getWriteBuffer().size());
+            System.out.println("@@@ currentWriteBufferSize After put() is: " + _hTable.getWriteBuffer().size());
         }
         catch (IOException e)
         {
