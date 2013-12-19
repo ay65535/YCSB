@@ -331,9 +331,12 @@ public class HBaseClient extends com.yahoo.ycsb.DB
 
         try
         {
-            System.out.println("@@@ currentWriteBufferSize Before put() is: " + _hTable.getWriteBuffer().size());
+        	int size = _hTable.getWriteBuffer().size();
             _hTable.put(p);
-            System.out.println("@@@ currentWriteBufferSize After put() is: " + _hTable.getWriteBuffer().size());
+            if (_hTable.getWriteBuffer().size() <= size) {
+            	System.out.println("@@@ put() 後に currentWriteBufferSize が減りました: " + size + " -> " + _hTable.getWriteBuffer().size());
+			}
+            
         }
         catch (IOException e)
         {
