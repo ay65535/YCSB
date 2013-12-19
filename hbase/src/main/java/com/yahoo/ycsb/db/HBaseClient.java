@@ -25,12 +25,9 @@ import com.yahoo.ycsb.StringByteIterator;
 
 import java.io.IOException;
 import java.util.*;
-//import java.util.HashMap;
-//import java.util.Properties;
-//import java.util.Set;
-//import java.util.Vector;
 
 import com.yahoo.ycsb.measurements.Measurements;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.HTable;
@@ -119,6 +116,13 @@ public class HBaseClient extends com.yahoo.ycsb.DB
             //2 suggestions from http://ryantwopointoh.blogspot.com/2009/01/performance-of-hbase-importing.html
             _hTable.setAutoFlush(false);
             _hTable.setWriteBufferSize(1024*1024*12);
+            System.out.print("@@@ auto flush is: ");
+            if (_hTable.isAutoFlush()) {
+				System.out.println("true.");
+			} else {
+				System.out.println("false.");
+			}
+            System.out.println("@@@ write buffer size is: " + _hTable.getWriteBufferSize());
             //return hTable;
         }
 
@@ -325,7 +329,9 @@ public class HBaseClient extends com.yahoo.ycsb.DB
 
         try
         {
+            System.out.println("@@@ currentWriteBufferSizeBefore is: " + _hTable.getWriteBuffer().size());
             _hTable.put(p);
+            System.out.println("@@@ currentWriteBufferSizeAfter is " + _hTable.getWriteBuffer().size());
         }
         catch (IOException e)
         {
