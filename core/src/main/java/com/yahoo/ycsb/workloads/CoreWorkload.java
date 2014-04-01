@@ -18,6 +18,7 @@
 package com.yahoo.ycsb.workloads;
 
 import java.util.Properties;
+
 import com.yahoo.ycsb.*;
 import com.yahoo.ycsb.generator.CounterGenerator;
 import com.yahoo.ycsb.generator.DiscreteGenerator;
@@ -36,6 +37,8 @@ import com.yahoo.ycsb.measurements.Measurements;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -405,6 +408,7 @@ public class CoreWorkload extends Workload
 		}
 
 		fieldchooser=new UniformIntegerGenerator(0,fieldcount-1);
+		//fieldchooser=new CounterGenerator(fieldcount-1);
 		
 		if (scanlengthdistrib.compareTo("uniform")==0)
 		{
@@ -427,12 +431,32 @@ public class CoreWorkload extends Workload
  		}
 		return "user"+keynum;
 	}
+	public String buildKeyName000000(long keynum) {
+ 		if (keynum % 100 == 97)
+ 		{
+ 			//System.out.println("@@@ hashing!");
+ 			keynum=Utils.hash(keynum);
+ 		}
+		return "user"+ String.format("%1$06d", keynum);
+	}
 	HashMap<String, ByteIterator> buildValues() {
  		HashMap<String,ByteIterator> values=new HashMap<String,ByteIterator>();
 
  		for (int i=0; i<fieldcount; i++)
  		{
  			String fieldkey="field"+i;
+ 			//System.out.println("@@@ fieldkey is " + fieldkey);
+ 			ByteIterator data= new RandomByteIterator(fieldlengthgenerator.nextInt());
+ 			values.put(fieldkey,data);
+ 		}
+		return values;
+	}
+	Map<String, ByteIterator> buildValues00() {
+ 		Map<String, ByteIterator> values = new LinkedHashMap<String, ByteIterator>();
+ 		
+ 		for (int i=0; i<fieldcount; i++)
+ 		{
+ 			String fieldkey="field"+String.format("%1$02d", i);
  			ByteIterator data= new RandomByteIterator(fieldlengthgenerator.nextInt());
  			values.put(fieldkey,data);
  		}
@@ -456,7 +480,7 @@ public class CoreWorkload extends Workload
 	public boolean doInsert(DB db, Object threadstate)
 	{
 		int keynum=keysequence.nextInt();
-		String dbkey = buildKeyName(keynum);
+		String dbkey = buildKeyName000000(keynum);
 		HashMap<String, ByteIterator> values = buildValues();
 		if (db.insert(table,dbkey,values) == 0)
 			return true;
@@ -633,7 +657,7 @@ public class CoreWorkload extends Workload
 		//choose the next key
 		int keynum=transactioninsertkeysequence.nextInt();
 
-		String dbkey = buildKeyName(keynum);
+		String dbkey = buildKeyName000000(keynum);
 
 		HashMap<String, ByteIterator> values = buildValues();
 		db.insert(table,dbkey,values);
