@@ -434,7 +434,6 @@ public class CoreWorkload extends Workload
 	public String buildKeyName000000(long keynum) {
  		if (keynum % 100 == 97)
  		{
- 			//System.out.println("@@@ hashing!");
  			keynum=Utils.hash(keynum);
  		}
 		return "user"+ String.format("%1$06d", keynum);
@@ -445,7 +444,6 @@ public class CoreWorkload extends Workload
  		for (int i=0; i<fieldcount; i++)
  		{
  			String fieldkey="field"+i;
- 			//System.out.println("@@@ fieldkey is " + fieldkey);
  			ByteIterator data= new RandomByteIterator(fieldlengthgenerator.nextInt());
  			values.put(fieldkey,data);
  		}

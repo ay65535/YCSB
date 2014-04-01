@@ -18,12 +18,9 @@
 package com.yahoo.ycsb.db;
 
 
-import com.sun.org.apache.commons.logging.Log;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.ByteIterator;
 import com.yahoo.ycsb.ByteArrayByteIterator;
-import com.yahoo.ycsb.StringByteIterator;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -31,7 +28,6 @@ import com.yahoo.ycsb.measurements.Measurements;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.KeyValue.KVComparator;
 import org.apache.hadoop.hbase.client.HTable;
 //import org.apache.hadoop.hbase.client.Scanner;
 import org.apache.hadoop.hbase.client.Get;
@@ -102,9 +98,7 @@ public class HBaseClient extends com.yahoo.ycsb.DB
         try {
             long st=System.nanoTime();
             if (_hTable != null) {
-            	//int size = _hTable.getWriteBuffer().size();
                 _hTable.flushCommits();
-                //System.out.println("@@@ currentWriteBufferSize After flushCommits() is: " + size + "->"+ _hTable.getWriteBuffer().size());
             }
             long en=System.nanoTime();
             _measurements.measure("UPDATE", (int)((en-st)/1000));
@@ -120,14 +114,7 @@ public class HBaseClient extends com.yahoo.ycsb.DB
             //2 suggestions from http://ryantwopointoh.blogspot.com/2009/01/performance-of-hbase-importing.html
             _hTable.setAutoFlush(false);
             //_hTable.setWriteBufferSize(1024*1024*12);
-            _hTable.setWriteBufferSize(1024*1024*100); // master:~localuser/hbase/conf の設定値！
-            //System.out.print("@@@ auto flush is: ");
-            //if (_hTable.isAutoFlush()) {
-			//	System.out.println("true.");
-			//} else {
-			//	System.out.println("false.");
-			//}
-            //System.out.println("@@@ write buffer size is: " + _hTable.getWriteBufferSize());
+            _hTable.setWriteBufferSize(1024*1024*100); // master:~localuser/hbase/conf のたかさんの設定値と同じに！
             //return hTable;
         }
 
@@ -329,25 +316,12 @@ public class HBaseClient extends com.yahoo.ycsb.DB
                 System.out.println("Adding field/value " + entry.getKey() + "/"+
                   entry.getValue() + " to put request");
             }
-            // TODO: 上のprintfではorderedなのにサーバに送られてきたvalueのvlenが0になってる！！
             p.add(_columnFamilyBytes,Bytes.toBytes(entry.getKey()),entry.getValue().toArray());
-//            List<KeyValue> kvList = p.get(_columnFamilyBytes, Bytes.toBytes(entry.getKey()));
-//            int i = 0;
-//            for (KeyValue kv : kvList) {
-//				System.out.println("@@@ " + entry.getKey() + " { kvList[" + i++ + "]=" + kv.getKeyString() + "///" + Bytes.toStringBinary(kv.getValue()) + " }");
-//			}
         }
 
         try
         {
-//        	int size = _hTable.getWriteBuffer().size();
-//        	System.out.println("@@@ p.size(): " + p.size());
-//        	System.out.println("@@@ _hTable.getWriteBuffer().size(): " + size);
             _hTable.put(p);
-//            if (_hTable.getWriteBuffer().size() <= size) {
-//            	System.out.println("@@@ put() 後に currentWriteBufferSize が減りました: " + size + " -> " + _hTable.getWriteBuffer().size());
-//			}
-            
         }
         catch (IOException e)
         {
